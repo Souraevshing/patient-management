@@ -1,30 +1,31 @@
 services:
-  patient-db:
+  billing-db:
     image: postgres:15
-    container_name: patient-db
+    container_name: billing-db
     restart: always
     environment:
-      POSTGRES_DB: patient_db
+      POSTGRES_DB: billing_db
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: admin
     ports: []
     volumes:
-      - patient_postgres_data:/var/lib/postgresql/data
+      - billing_postgres_data:/var/lib/postgresql/data
 
-  patient-service:
+  billing-service:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: patient-service
+    container_name: billing-service
     restart: always
     depends_on:
-      - patient-db
+      - billing-db
     ports:
-      - "5050:5050"
+      - "5052:5052"
+      - "9091:9091"
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://patient-db:5432/patient_db
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://billing-db:5432/billing_db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=admin
 
 volumes:
-  patient_postgres_data:
+  billing_postgres_data:
